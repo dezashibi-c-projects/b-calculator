@@ -29,3 +29,8 @@ As an aspiring C programmer, I want to implement a command-line calculator tool 
 ## Project Structure
 
 - Use a multiple file structure with a proper `Makefile`.
+- The `Makefile` uses 3 different folder for better file organization.
+  - `src` for source files
+  - `obj` for object files
+  - `build` for executables and build artifact
+  - as always I've used `.exe` only for making the `Makefile` work easier on windows too.
