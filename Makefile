@@ -38,9 +38,9 @@ all: $(BUILDDIR)/$(TARGET)
 
 # Run the target
 run: $(BUILDDIR)/$(TARGET)
-	./$(BUILDDIR)/$(TARGET)
+	./$(BUILDDIR)/$(TARGET) + 1 2 3
 
-input: $(BUILDDIR)/$(TARGET)
+run_input: $(BUILDDIR)/$(TARGET)
 	./$(BUILDDIR)/$(TARGET) f input.clc
 
 # Rule to link the object files and create the executable
