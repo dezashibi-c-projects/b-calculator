@@ -15,9 +15,12 @@
 
 #include <stdio.h>
 
-int main(void)
+int main(int argc, char *argv[])
 {
     puts("Welcome!");
+
+    for (int i = 1; i < argc; ++i)
+        printf("%s\n", argv[i]);
 
     return 0;
 }
