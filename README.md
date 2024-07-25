@@ -67,3 +67,26 @@ I might need to change the invoker functions implementations to return actual re
 ## Phase 4 - clean ups and review the code
 
 At this moment the code is working and finished and I would like to take a break and then review the code and make some improvements
+
+The result for the input below (`input.clc`):
+
+```plain
+sub 1 2 3 4     4
+
+
+add 5 6 7
+mul 23 44
+
+```
+
+Is:
+
+```bash
+CLI Calculator
+Processing calculations from 'input.clc':
+line 1) 1.00 - 2.00 - 3.00 - 4.00 - 4.00 = -12.00
+line 2) -12.00 + 5.00 + 6.00 + 7.00 = 6.00
+line 3) 6.00 x 23.00 x 44.00 = 6072.00
+```
+
+result is made running `make run_input` or `./build/calc.exe f input.clc` manually.
