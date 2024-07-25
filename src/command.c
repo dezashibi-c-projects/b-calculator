@@ -1,7 +1,7 @@
 // ***************************************************************************************
 //    Project: Calculator in C
-//    File: main.c
-//    Date: 2024-07-24
+//    File: command.c
+//    Date: 2024-07-25
 //    Author: Navid Dezashibi
 //    Contact: navid@dezashibi.com
 //    Website: https://www.dezashibi.com | https://github.com/dezashibi
@@ -13,45 +13,36 @@
 // *  Description: refer to readme file.
 // ***************************************************************************************
 
-#include "colors.h"
 #include "command.h"
 
-def_invoke_fn_as(addition_fn)
+#include "colors.h"
+
+Command* __get_command(char* name, Command commands[], size_t cmd_count)
 {
-    (void)argc;
-    (void)argv;
-    return 0;
+    assert(cmd_count > 0 && "There is no command defined");
+
+    Command* cmd = NULL;
+
+    for (size_t i = 0; i < cmd_count; ++i)
+    {
+        if (strcmp(name, commands[i].name) == 0)
+        {
+            cmd = &commands[i];
+            break;
+        }
+    }
+
+    return cmd;
 }
 
-static Command commands[] = {
-    {"+", "adds 2 or more arguments together", addition_fn},
-};
-
-int main(int argc, char* argv[])
+void __show_help(Command commands[], size_t cmd_count)
 {
-    puts("Welcome!");
+    assert(cmd_count > 0 && "There is no command defined");
 
-    if (argc < 3)
+    puts(FG_GREEN "available commands:" COLOR_RESET);
+
+    for (size_t i = 0; i < cmd_count; ++i)
     {
-        puts(FG_RED "error: " COLOR_RESET "not enough number of arguments\n\t" FG_GREEN "./calc.exe <op> <...args>\n" COLOR_RESET);
-
-        show_help(commands);
-
-        return -1;
+        printf("\t" FG_LGREEN "%s" COLOR_RESET " -> " FG_LBLUE "%s\n" COLOR_RESET, commands[i].name, commands[i].help);
     }
-
-    Command* cmd = get_command(argv[1], commands);
-
-    if (cmd == NULL)
-    {
-        printf(FG_RED "error: " COLOR_RESET "command '%s' not found\n", argv[1]);
-
-        show_help(commands);
-
-        return -1;
-    }
-
-    printf("Help on %s: %s\n", cmd->name, cmd->help);
-
-    return 0;
 }

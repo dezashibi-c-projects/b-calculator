@@ -34,3 +34,17 @@ As an aspiring C programmer, I want to implement a command-line calculator tool 
   - `obj` for object files
   - `build` for executables and build artifact
   - as always I've used `.exe` only for making the `Makefile` work easier on windows too.
+
+## Implementation Phases
+
+### Phase 1
+
+I would like to implement this program using command pattern, by first looking at the problem I could see the repetitive form of command, `+ 1 2 3` is same as `f file.clc` as the first token is the command and the rest is argument(s).
+
+Each command must be a structure with the following members, I would call it `Command` type:
+
+- `char[]` for command name or `command` for short
+- `char[]` for command help or `help` for short
+- `invoke` which is a function pointer to the definition of a function accepting `int argc, char* argv[]` and returning `int`
+
+I would also define all the commands in a `static` commands array that holds a couple of `Command`s.
