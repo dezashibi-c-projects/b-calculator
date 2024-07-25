@@ -45,8 +45,8 @@ I would like to implement this program using command pattern, by first looking a
 
 Each command must be a structure with the following members, I would call it `Command` type:
 
-- `char[]` for command name or `command` for short
-- `char[]` for command help or `help` for short
+- `char*` for command name or `command` for short
+- `char*` for command help or `help` for short
 - `invoke` which is a function pointer to the definition of a function accepting `int argc, char* argv[]` and returning `int`
 
 I would also define all the commands in a `static` commands array that holds a couple of `Command`s.
@@ -65,6 +65,8 @@ I would like to load the text file line by line and create a fake `argc`, `argv`
 add it at the top of the next line parameter lists.
 
 I might need to change the invoker functions implementations to return actual result and manage failures using `exit` function instead.
+
+To have access to pointer to `commands` and `command_size` I've added these arguments to `invoke` field and also the the `def_invoke_fn_as` macro.
 
 ## Phase 4 - clean ups and review the code
 
