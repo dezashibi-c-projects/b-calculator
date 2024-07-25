@@ -13,6 +13,10 @@
 // *  Description: refer to readme file.
 // ***************************************************************************************
 
+#include <assert.h>
+#include <stdio.h>
+#include <string.h>
+
 #include "command.h"
 
 #include "colors.h"

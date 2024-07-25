@@ -38,7 +38,7 @@ all: $(BUILDDIR)/$(TARGET)
 
 # Run the target
 run: $(BUILDDIR)/$(TARGET)
-	./$(BUILDDIR)/$(TARGET) + 1 2 3
+	./$(BUILDDIR)/$(TARGET) add 1 2 3
 
 run_input: $(BUILDDIR)/$(TARGET)
 	./$(BUILDDIR)/$(TARGET) f input.clc
