@@ -2,6 +2,7 @@
     "files.associations": {
         "colors.h": "c",
         "command.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "stdbool.h": "c"
     }
 }

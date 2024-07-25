@@ -94,3 +94,17 @@ line 3) 6.00 x 23.00 x 44.00 = 6072.00
 ```
 
 result is made running `make run_input` or `./build/calc.exe f input.clc` manually.
+
+### Memory Management
+
+One of the most obvious parts which needs memory management is the `f` command.
+
+If you go through commits you could see at first to just make things work I went through a naive way of using `malloc`/`free` in each
+iteration. Then soon I thought "well, that's not good, memory allocation/de-allocation is expensive", so I've decided to pre-allocate a space
+in memory as a preserved one-time memory allocation and re-use it over and over and free it all only once I'm done with memory at the end.
+
+Now I'm thinking even this can be removed, what if I have a 2 dimensional array for tokens per line, then I don't even need to allocate memory as
+I know I'm dealing with limited amount of tokens and characters per token in each line. The problem is that then I need to have fixed amount of
+temp_args all over the code definitions.
+
+So I think with this problem I'm gonna keep the second approach.
