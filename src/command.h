@@ -16,16 +16,8 @@
 #ifndef COMMANDS__H__
 #define COMMANDS__H__
 
+#include <stdio.h>
 #include <stdlib.h>
-
-/**
- * @brief defines an invoker function
- *
- * This macro expands to function declaration for standard invoke functions
- *
- * @param CMD command identifier name, better to end with `_fn`.
- */
-#define def_invoke_fn_as(CMD) int CMD(void* cmd, int argc, char* argv[])
 
 /**
  * @brief expands to argc checker
@@ -40,24 +32,53 @@
     {                                                                                                                                                                     \
         printf(FG_RED "error: " COLOR_RESET "not enough number of arguments for '%s'\nHelp: " FG_GREEN "%s\n" COLOR_RESET, ((Command*)cmd)->name, ((Command*)cmd)->help); \
                                                                                                                                                                           \
-        return -1;                                                                                                                                                        \
+        exit(-1);                                                                                                                                                         \
     }                                                                                                                                                                     \
-    int arg_starts_at = MIN_ARG
+    int arg_starts_at = (MIN_ARG - 1)
 
-typedef int (*invoke_fn)(void* cmd, int argc, char* argv[]);
-
-typedef struct
+struct Command; // forward declaration to make the function pointer field work
+typedef struct Command
 {
     char* name;
     char* help;
-    invoke_fn invoke;
-
+    double (*invoke)(struct Command* cmd, struct Command* commands, size_t cmd_count, int argc, char* argv[]);
 } Command;
 
-Command* __get_command(char* name, Command commands[], size_t cmd_count);
-void __show_help(Command commands[], size_t cmd_count);
+/**
+ * @brief defines an invoker function
+ *
+ * This macro expands to function declaration for standard invoke functions
+ *
+ * @param CMD_FN_IDENTIFIER command identifier name, better to end with `_fn`.
+ */
+#define def_invoke_fn_as(CMD_FN_IDENTIFIER) double CMD_FN_IDENTIFIER(Command* cmd, Command* commands, size_t cmd_count, int argc, char* argv[])
 
-#define get_command(NAME, COMMANDS) __get_command(NAME, COMMANDS, sizeof(COMMANDS) / sizeof(COMMANDS[0]))
-#define show_help(COMMANDS) __show_help(COMMANDS, sizeof(COMMANDS) / sizeof(COMMANDS[0]))
+/**
+ * @brief get certain commands from commands array
+ *
+ * This function searches the array of commands and return pointer to the
+ * found `Command` element with the `name` field equal to the given name.
+ *
+ * @param name the command name got from the cli argument
+ * @param commands the reference to the commands array
+ * @param cmd_count size of the commands array
+ *
+ * @return Command* -> pointer to the found command in the array
+ */
+Command* get_command(char* name, Command commands[], size_t cmd_count);
+
+/**
+ * @brief shows usage message when something happens
+ *
+ *
+ * @param commands the reference to the commands array
+ * @param cmd_count size of the commands array
+ *
+ * @return void
+ */
+void show_help(Command commands[], size_t cmd_count);
+
+#define def_commands static Command commands[] =
+#define def_commands_size() static const size_t commands_size = (sizeof(commands) / sizeof(commands[0]))
 
 #endif // COMMANDS__H__

@@ -48,3 +48,22 @@ Each command must be a structure with the following members, I would call it `Co
 - `invoke` which is a function pointer to the definition of a function accepting `int argc, char* argv[]` and returning `int`
 
 I would also define all the commands in a `static` commands array that holds a couple of `Command`s.
+
+## Phase 2
+
+I have refactored all the codes to `commands.h`, `commands.c` and `colors.h`.
+
+I also have created various macros to make my programming easier but I haven't forget to add comments for them!
+
+At this phase all the main operations are finished
+
+## Phase 3 - Loading from file
+
+I would like to load the text file line by line and create a fake `argc`, `argv` and run the process for each line, getting the result and
+add it at the top of the next line parameter lists.
+
+I might need to change the invoker functions implementations to return actual result and manage failures using `exit` function instead.
+
+## Phase 4 - clean ups and review the code
+
+At this moment the code is working and finished and I would like to take a break and then review the code and make some improvements

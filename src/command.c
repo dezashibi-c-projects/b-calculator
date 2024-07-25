@@ -21,7 +21,7 @@
 
 #include "colors.h"
 
-Command* __get_command(char* name, Command commands[], size_t cmd_count)
+Command* get_command(char* name, Command commands[], size_t cmd_count)
 {
     assert(cmd_count > 0 && "There is no command defined");
 
@@ -39,7 +39,7 @@ Command* __get_command(char* name, Command commands[], size_t cmd_count)
     return cmd;
 }
 
-void __show_help(Command commands[], size_t cmd_count)
+void show_help(Command commands[], size_t cmd_count)
 {
     assert(cmd_count > 0 && "There is no command defined");
 
