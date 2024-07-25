@@ -8,10 +8,10 @@ As an aspiring C programmer, I want to implement a command-line calculator tool 
 
 - General usage: `./calc <command> <argument(s)>`.
 - Possible commands are:
-  - `+` : Add all the arguments together.
-  - `-` : Subtract all the arguments from each other.
-  - `*` : Multiply all the arguments together.
-  - `/` : Divide all the arguments by each other.
+  - `add` : Add all the arguments together.
+  - `sub` : Subtract all the arguments from each other.
+  - `mul` : Multiply all the arguments together.
+  - `div` : Divide all the arguments by each other.
   - `f` : Load instructions from a file, perform the calculations, and display the results on the screen.
 
 ### Example of file input for the `f` command
@@ -19,9 +19,11 @@ As an aspiring C programmer, I want to implement a command-line calculator tool 
 #### **input.clc**
 
 ```plain
-- 1 2 3 4
-+ 5 6 7
-* 23 44
+sub 1 2 3 4     4
+
+
+add 5 6 7
+mul 23 44
 ```
 
 **NOTE:** Each line's result will be used as the first parameter of the next line, and the result of the last line will be printed out on the screen.
