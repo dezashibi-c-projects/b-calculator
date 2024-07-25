@@ -25,15 +25,17 @@
  * This macro expands to minimum arg needed check and defines a
  * arg count starter integer variable.
  *
+ * it also defines `arg_starts_at` as the starting point to get the args
+ *
  * @param MIN_ARG the minimum argument number that have to be received via command line.
  */
-#define do_arg_check(MIN_ARG)                                                                                                                                             \
-    if (argc < MIN_ARG)                                                                                                                                                   \
-    {                                                                                                                                                                     \
-        printf(FG_RED "error: " COLOR_RESET "not enough number of arguments for '%s'\nHelp: " FG_GREEN "%s\n" COLOR_RESET, ((Command*)cmd)->name, ((Command*)cmd)->help); \
-                                                                                                                                                                          \
-        exit(-1);                                                                                                                                                         \
-    }                                                                                                                                                                     \
+#define do_arg_check(MIN_ARG)                                                                                                                     \
+    if (argc < MIN_ARG)                                                                                                                           \
+    {                                                                                                                                             \
+        printf(FG_RED "error: " COLOR_RESET "not enough number of arguments for '%s'\nHelp: " FG_GREEN "%s\n" COLOR_RESET, cmd->name, cmd->help); \
+                                                                                                                                                  \
+        exit(-1);                                                                                                                                 \
+    }                                                                                                                                             \
     int arg_starts_at = (MIN_ARG - 1)
 
 struct Command; // forward declaration to make the function pointer field work

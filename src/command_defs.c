@@ -20,6 +20,11 @@
 #include <stdio.h>
 #include <string.h>
 
+#define MAX_LINE_SIZE 100
+#define MAX_TOK_PER_LINE 50
+#define MAX_TOK_SIZE 50
+#define WHITE_SPACE " \t\n"
+
 def_invoke_fn_as(version_fn)
 {
     (void)cmd;
@@ -138,24 +143,35 @@ def_invoke_fn_as(file_fn)
 {
     do_arg_check(3);
 
-    bool must_fail = false;
-
     FILE* file = fopen(argv[arg_starts_at], "r");
 
     if (file == NULL)
     {
-        printf(FG_RED "error: " COLOR_RESET "cannot open the file '%s', '%s'\nHelp: " FG_GREEN "%s\n" COLOR_RESET, argv[arg_starts_at], ((Command*)cmd)->name, ((Command*)cmd)->help);
+        printf(FG_RED "error: " COLOR_RESET "cannot open the file '%s', '%s'\nHelp: " FG_GREEN "%s\n" COLOR_RESET, argv[arg_starts_at], cmd->name, cmd->help);
         exit(-1);
     }
 
     printf("Processing calculations from '" FG_LGREEN "%s" COLOR_RESET "':\n", argv[arg_starts_at]);
 
-    char buffer[255];           // each line can be a maximum of 255 characters
-    char* temp_argv[100] = {0}; // temporary argument holder with 100 places (args) per line including 1 executable name, 1 command name, and 98 arguments
-    int temp_argc;              // temporary argument count holder
+    bool must_fail = false;
+    char buffer[MAX_LINE_SIZE];
+    char* temp_argv[MAX_TOK_PER_LINE] = {0}; // temporary argument holder including 1 executable name, 1 command name, and the rest command arguments
+    int temp_argc;
     double curr_result = 0;
     int curr_line = 1;
     char* curr_tok;
+
+    // Pre-allocating `temp_argv` with initialized memory
+    for (size_t i = 0; i < MAX_TOK_PER_LINE; ++i)
+    {
+        temp_argv[i] = malloc(MAX_TOK_SIZE + 1); // Allocate enough memory for each token (+ 1 for null terminator)
+        if (temp_argv[i] == NULL)
+        {
+            fprintf(stderr, "Memory allocation failed\n");
+            must_fail = true;
+            goto cleanup;
+        }
+    }
 
     while (fgets(buffer, sizeof(buffer), file) != NULL)
     {
@@ -165,75 +181,66 @@ def_invoke_fn_as(file_fn)
         temp_argc = 2;
 
         // Tokenize buffer based on ' ' (whitespace) and get each word separately
-        curr_tok = strtok(buffer, " \t\n");
+        curr_tok = strtok(buffer, WHITE_SPACE);
 
         if (curr_tok == NULL)
             continue;
 
-        // Allocate memory and copy command to temp_argv
-        temp_argv[1] = strdup(curr_tok);
-        if (temp_argv[1] == NULL)
-        {
-            fprintf(stderr, "Memory allocation failed\n");
-            goto cleanup;
-        }
+        // Allocate memory and copy command to temp_argv[1]
+        // temp_argv[0] is supposed to be the executable name
+        // and as it's not being used it won't be filled with any data
+        strcpy(temp_argv[1], curr_tok);
 
-        // Copy the results for the lines after the first line
-        // It will copy the result at the top of the arguments
+        // Copy the results for the lines after the first line it will
+        // copy the previous result at the top of the arguments
         if (curr_line > 1)
         {
-            temp_argv[arg_starts_at] = (char*)malloc(10); // Allocate sufficient memory for the result (10 digits or command letter size)
-            if (temp_argv[arg_starts_at] == NULL)
-            {
-                fprintf(stderr, "Memory allocation failed\n");
-                goto cleanup;
-            }
             sprintf(temp_argv[arg_starts_at], "%.2f", curr_result);
 
             // we've already got an argument from the previous line
             ++temp_argc;
         }
 
+        // Continue tokenization and add the rest of the tokens as arguments
         while (curr_tok != NULL)
         {
-            curr_tok = strtok(NULL, " \t\n");
+            curr_tok = strtok(NULL, WHITE_SPACE);
             if (curr_tok != NULL)
             {
-                temp_argv[temp_argc] = strdup(curr_tok); // Allocate memory for each token
-                if (temp_argv[temp_argc] == NULL)
-                {
-                    fprintf(stderr, "Memory allocation failed\n");
-                    goto cleanup;
-                }
+                strcpy(temp_argv[temp_argc], curr_tok);
                 ++temp_argc;
             }
         }
+
+        printf("line %d) ", curr_line);
 
         Command* cmd = get_command(temp_argv[1], commands, cmd_count);
         if (cmd == NULL)
         {
             printf(FG_RED "error: " COLOR_RESET "command '%s' not found\n", temp_argv[1]);
             show_help(commands, cmd_count);
+            must_fail = true;
             goto cleanup;
         }
 
-        printf("line %d) ", curr_line);
         curr_result = cmd->invoke(cmd, commands, cmd_count, temp_argc, temp_argv);
 
         ++curr_line;
-
-        // Free allocated memory for tokens
-        for (int i = 1; i < temp_argc; i++)
-        {
-            free(temp_argv[i]);
-            temp_argv[i] = NULL;
-        }
     }
 
 cleanup:
+    // Free allocated memory for tokens
+    for (int i = 1; i < MAX_TOK_PER_LINE; i++)
+    {
+        free(temp_argv[i]);
+        temp_argv[i] = NULL;
+    }
+
     if (file)
         fclose(file);
+
     if (must_fail)
         exit(-1);
+
     return 0;
 }
