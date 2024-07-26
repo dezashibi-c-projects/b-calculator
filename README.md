@@ -107,4 +107,28 @@ Now I'm thinking even this can be removed, what if I have a 2 dimensional array 
 I know I'm dealing with limited amount of tokens and characters per token in each line. The problem is that then I need to have fixed amount of
 temp_args all over the code definitions.
 
-So I think with this problem I'm gonna keep the second approach.
+~~So I think with this problem I'm gonna keep the second approach.~~
+
+**UPDATE:** The third method worked as expected, here is the breakdown of what happened in the code and why?
+
+First of all, when you know why and how your program is written and must be used always apply limitations, never scared of telling
+your users there are limitations because there are!.
+
+In the other hand, we're no longer living in `Commodore 64` era, meaning we do have enough memory, trust me we do.
+
+So, combined together, what we can do is to have a preserved array say for 100 lines of instructions each line can have 52 tokens which the first token is a dummy token we need to make things work
+in a generic way (a place holder for the executable name) the second one is the command name (`version`, `add`, `sub`, `mul`, `div` and `f`) and the rest are the arguments (numbers or file name) to the command.
+we can also limit the number of character per token as we already know the maximum number of characters might be for the executable path based on how user calls it, then `version` command and the rest are 3 to 4 characters
+plus null terminator character `'\0'`.
+
+So I could came up with this:
+
+```c
+#define MAX_LINE_SIZE 100
+#define MAX_TOK_PER_LINE 52
+#define MAX_TOK_SIZE 50
+```
+
+You might want to change them, go ahead, that's no problem.
+
+I've also added some size checking with proper error messages as well and refactored them into two function macros (`check_argc_size` and `check_token_size`). They are pretty much straight forward and self-explanatory.

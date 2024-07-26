@@ -20,11 +20,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#define MAX_LINE_SIZE 100
-#define MAX_TOK_PER_LINE 50
-#define MAX_TOK_SIZE 50
-#define WHITE_SPACE " \t\n"
-
 def_invoke_fn_as(version_fn)
 {
     (void)cmd;
@@ -75,6 +70,7 @@ def_invoke_fn_as(subtraction_fn)
 
     double result = atof(argv[arg_starts_at]);
     printf("%.2f", result);
+
     for (int i = arg_starts_at + 1; i < argc; ++i)
     {
         double number = atof(argv[i]);
@@ -155,36 +151,29 @@ def_invoke_fn_as(file_fn)
 
     bool must_fail = false;
     char buffer[MAX_LINE_SIZE];
-    char* temp_argv[MAX_TOK_PER_LINE] = {0}; // temporary argument holder including 1 executable name, 1 command name, and the rest command arguments
+    // temporary argument holder including 1 executable name, 1 command name, and the rest command arguments
+    // and each token has a fixed preserved size
+    line_token_t temp_argv;
     int temp_argc;
     double curr_result = 0;
     int curr_line = 1;
     char* curr_tok;
-
-    // Pre-allocating `temp_argv` with initialized memory
-    for (size_t i = 0; i < MAX_TOK_PER_LINE; ++i)
-    {
-        temp_argv[i] = malloc(MAX_TOK_SIZE + 1); // Allocate enough memory for each token (+ 1 for null terminator)
-        if (temp_argv[i] == NULL)
-        {
-            fprintf(stderr, "Memory allocation failed\n");
-            must_fail = true;
-            goto cleanup;
-        }
-    }
 
     while (fgets(buffer, sizeof(buffer), file) != NULL)
     {
         // ./calc.exe <cmd> args
         // 0           1    2 3 ...
         // we always have 2 args available
-        temp_argc = 2;
+        temp_argc = arg_starts_at;
 
         // Tokenize buffer based on ' ' (whitespace) and get each word separately
         curr_tok = strtok(buffer, WHITE_SPACE);
 
         if (curr_tok == NULL)
             continue;
+
+        check_argc_size(temp_argc, true);
+        check_token_size(curr_tok, true);
 
         // Allocate memory and copy command to temp_argv[1]
         // temp_argv[0] is supposed to be the executable name
@@ -207,6 +196,9 @@ def_invoke_fn_as(file_fn)
             curr_tok = strtok(NULL, WHITE_SPACE);
             if (curr_tok != NULL)
             {
+                check_argc_size(temp_argc, true);
+                check_token_size(curr_tok, true);
+
                 strcpy(temp_argv[temp_argc], curr_tok);
                 ++temp_argc;
             }
@@ -229,13 +221,6 @@ def_invoke_fn_as(file_fn)
     }
 
 cleanup:
-    // Free allocated memory for tokens
-    for (int i = 1; i < MAX_TOK_PER_LINE; i++)
-    {
-        free(temp_argv[i]);
-        temp_argv[i] = NULL;
-    }
-
     if (file)
         fclose(file);
 

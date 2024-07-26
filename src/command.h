@@ -19,6 +19,49 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define MAX_LINE_SIZE 100
+#define MAX_TOK_PER_LINE 52
+#define MAX_TOK_SIZE 50
+#define WHITE_SPACE " \t\n"
+
+/**
+ * @brief Macro function to check if number of passed arguments exceeds the limit of maximum number of tokens per line
+ *
+ * @param ARGC_NAME is the name of the variable that holds the argument count in the scope
+ * @param go_to_cleanup must be a true or false value to activate goto command
+ */
+#define check_argc_size(ARGC_NAME, go_to_cleanup)                                                                                                                                                                    \
+    if (argc >= MAX_TOK_PER_LINE)                                                                                                                                                                                    \
+    {                                                                                                                                                                                                                \
+        printf(FG_RED "error: maximum token per line exceeded (got='%d'), allowed number of token per line including one reserved, one for command and the numbers is '%d' tokens.\n", ARGC_NAME, MAX_TOK_PER_LINE); \
+        must_fail = true;                                                                                                                                                                                            \
+        if (go_to_cleanup)                                                                                                                                                                                           \
+            goto cleanup;                                                                                                                                                                                            \
+    }
+
+/**
+ * @brief Macro function to check if size of each token (argument or command) exceeds the limit of maximum number of characters per token
+ *
+ * @param TOKEN is the name of the variable that holds the token in the scope
+ * @param go_to_cleanup must be a true or false value to activate goto command
+ */
+#define check_token_size(TOKEN, go_to_cleanup)                                                                                                                                                      \
+    if (strlen(TOKEN) > MAX_TOK_SIZE)                                                                                                                                                               \
+    {                                                                                                                                                                                               \
+        printf(FG_RED "error: maximum token character limit exceeded (got='%ld' for '%s'), allowed number of characters per each token is '%d' characters.\n", strlen(TOKEN), TOKEN, MAX_TOK_SIZE); \
+        must_fail = true;                                                                                                                                                                           \
+        if (go_to_cleanup)                                                                                                                                                                          \
+            goto cleanup;                                                                                                                                                                           \
+    }
+
+/**
+ * @brief for a 2-Dimensional array which holds all tokens per each line
+ *
+ * CHANGE `MAX_TOK_PER_LINE` and `MAX_TOK_SIZE` based on your requirements
+ * in `command.h`
+ */
+typedef char line_token_t[MAX_TOK_PER_LINE][MAX_TOK_SIZE];
+
 /**
  * @brief expands to argc checker
  *
@@ -43,7 +86,7 @@ typedef struct Command
 {
     char* name;
     char* help;
-    double (*invoke)(struct Command* cmd, struct Command* commands, size_t cmd_count, int argc, char* argv[]);
+    double (*invoke)(struct Command* cmd, struct Command* commands, size_t cmd_count, int argc, char argv[MAX_TOK_PER_LINE][MAX_TOK_SIZE]);
 } Command;
 
 /**
@@ -53,7 +96,7 @@ typedef struct Command
  *
  * @param CMD_FN_IDENTIFIER command identifier name, better to end with `_fn`.
  */
-#define def_invoke_fn_as(CMD_FN_IDENTIFIER) double CMD_FN_IDENTIFIER(Command* cmd, Command* commands, size_t cmd_count, int argc, char* argv[])
+#define def_invoke_fn_as(CMD_FN_IDENTIFIER) double CMD_FN_IDENTIFIER(Command* cmd, Command* commands, size_t cmd_count, int argc, char argv[MAX_TOK_PER_LINE][MAX_TOK_SIZE])
 
 /**
  * @brief get certain commands from commands array

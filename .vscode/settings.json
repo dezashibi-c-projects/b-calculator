@@ -3,6 +3,7 @@
         "colors.h": "c",
         "command.h": "c",
         "stdlib.h": "c",
-        "stdbool.h": "c"
+        "stdbool.h": "c",
+        "stdio.h": "c"
     }
 }

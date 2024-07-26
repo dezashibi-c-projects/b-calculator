@@ -16,7 +16,9 @@
 #include "colors.h"
 #include "command.h"
 #include "command_defs.h"
+#include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
 
 def_commands{
     {"version", "shows version and build information", version_fn},
@@ -52,7 +54,24 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    cmd->invoke(cmd, commands, commands_size, argc, argv);
+    line_token_t temp_argv;
+    bool must_fail = false;
 
+    check_argc_size(argc, false);
+
+    for (int i = 0; i < argc; ++i)
+    {
+
+        check_token_size(argv[i], false);
+
+        strncpy(temp_argv[i], argv[i], strlen(argv[i]));
+    }
+
+    if (must_fail)
+        return -1;
+
+    cmd->invoke(cmd, commands, commands_size, argc, temp_argv);
+
+cleanup:
     return 0;
 }
