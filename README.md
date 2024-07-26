@@ -116,7 +116,7 @@ your users there are limitations because there are!.
 
 In the other hand, we're no longer living in `Commodore 64` era, meaning we do have enough memory, trust me we do.
 
-So, combined together, what we can do is to have a preserved array say for 100 lines of instructions each line can have 52 tokens which the first token is a dummy token we need to make things work
+So, combined together, what we can do is to have a preserved array say for each line which can have 52 tokens that its first token is a dummy token we need to make things work
 in a generic way (a place holder for the executable name) the second one is the command name (`version`, `add`, `sub`, `mul`, `div` and `f`) and the rest are the arguments (numbers or file name) to the command.
 we can also limit the number of character per token as we already know the maximum number of characters might be for the executable path based on how user calls it, then `version` command and the rest are 3 to 4 characters
 plus null terminator character `'\0'`.
@@ -124,9 +124,9 @@ plus null terminator character `'\0'`.
 So I could came up with this:
 
 ```c
-#define MAX_LINE_SIZE 100
 #define MAX_TOK_PER_LINE 52
 #define MAX_TOK_SIZE 50
+#define MAX_LINE_SIZE (MAX_TOK_PER_LINE * MAX_TOK_SIZE)
 ```
 
 You might want to change them, go ahead, that's no problem.

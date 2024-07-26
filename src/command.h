@@ -19,9 +19,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define MAX_LINE_SIZE 100
 #define MAX_TOK_PER_LINE 52
 #define MAX_TOK_SIZE 50
+#define MAX_LINE_SIZE (MAX_TOK_PER_LINE * MAX_TOK_SIZE)
 #define WHITE_SPACE " \t\n"
 
 /**
