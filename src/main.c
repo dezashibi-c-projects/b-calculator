@@ -64,7 +64,7 @@ int main(int argc, char* argv[])
 
         check_token_size(argv[i], false);
 
-        strncpy(temp_argv[i], argv[i], strlen(argv[i]));
+        strcpy(temp_argv[i], argv[i]);
     }
 
     if (must_fail)
