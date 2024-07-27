@@ -25,7 +25,6 @@ def_invoke_fn_as(version_fn)
     (void)cmd;
     (void)argc;
     (void)argv;
-    (void)cmd;
     (void)commands;
     (void)cmd_count;
 
