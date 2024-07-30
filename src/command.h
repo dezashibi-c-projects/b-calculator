@@ -48,7 +48,7 @@
 #define check_token_size(TOKEN, go_to_cleanup)                                                                                                                                                      \
     if (strlen(TOKEN) > MAX_TOK_SIZE)                                                                                                                                                               \
     {                                                                                                                                                                                               \
-        printf(FG_RED "error: maximum token character limit exceeded (got='%ld' for '%s'), allowed number of characters per each token is '%d' characters.\n", strlen(TOKEN), TOKEN, MAX_TOK_SIZE); \
+        printf(FG_RED "error: maximum token character limit exceeded (got='%lld' for '%s'), allowed number of characters per each token is '%d' characters.\n", strlen(TOKEN), TOKEN, MAX_TOK_SIZE); \
         must_fail = true;                                                                                                                                                                           \
         if (go_to_cleanup)                                                                                                                                                                          \
             goto cleanup;                                                                                                                                                                           \
